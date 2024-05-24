@@ -13,7 +13,7 @@ final class ImageUtils {
 
   /// Pick an image from the gallery
   Future<XFile?> pickGalleryImage({
-    int maxSizeMB = 5,
+    int maxSizeMB = 10,
     void Function(String error)? onLimit,
   }) async {
     try {
@@ -33,7 +33,7 @@ final class ImageUtils {
 
   /// Pick an image from the camera
   Future<XFile?> pickCameraImage({
-    int maxSizeMB = 5,
+    int maxSizeMB = 10,
     void Function(String error)? onLimit,
   }) async {
     try {
