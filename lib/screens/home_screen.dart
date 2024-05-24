@@ -1,5 +1,3 @@
-import 'package:air_scanner/providers/theme_provider.dart';
-import 'package:air_scanner/utils/context_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 
 import '../providers/notifiers/image_notifier.dart';
+import '../providers/theme_provider.dart';
+import '../utils/context_utils.dart';
 import '../utils/image_utils.dart';
 import 'image_viewer.dart';
 
@@ -33,7 +33,7 @@ class HomeScreen extends ConsumerWidget {
               icon: const Icon(Icons.restore_rounded, color: Colors.white),
               onPressed: ref.read(imageNotiiferProvider.notifier).clearImage,
             ),
-            builder: (context, ref, child) {
+            builder: (BuildContext context, WidgetRef ref, Widget? child) {
               final ImageState state = ref.watch(imageNotiiferProvider);
               return state.maybeWhen(
                 selected: (_, __) => child!,
@@ -46,17 +46,17 @@ class HomeScreen extends ConsumerWidget {
       body: Center(
         child: googleFonts.when(
           loading: () => const CircularProgressIndicator(),
-          error: (error, _) => Text('Error: $error'),
+          error: (Object error, _) => Text('Error: $error'),
           data: (_) => const ImageViewer(),
         ),
       ),
       bottomSheet: Consumer(
         child: _bottomSheet(context, ref),
-        builder: (context, ref, child) {
+        builder: (BuildContext context, WidgetRef ref, Widget? child) {
           final ImageState state = ref.watch(imageNotiiferProvider);
           return state.maybeWhen(
             initial: () => child!,
-            selected: (before, after) => Container(
+            selected: (XFile before, Uint8List? after) => Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -129,7 +129,8 @@ class HomeScreen extends ConsumerWidget {
                 child: ElevatedButton.icon(
                   onPressed: () async {
                     final XFile? image = await ImageUtils.instance
-                        .pickCameraImage(onLimit: (e) => context.showError(e));
+                        .pickCameraImage(
+                            onLimit: (String e) => context.showError(e));
                     if (image != null) {
                       ref
                           .read(imageNotiiferProvider.notifier)
@@ -147,7 +148,8 @@ class HomeScreen extends ConsumerWidget {
                 child: ElevatedButton.icon(
                   onPressed: () async {
                     final XFile? image = await ImageUtils.instance
-                        .pickGalleryImage(onLimit: (e) => context.showError(e));
+                        .pickGalleryImage(
+                            onLimit: (String e) => context.showError(e));
                     if (image != null) {
                       ref
                           .read(imageNotiiferProvider.notifier)

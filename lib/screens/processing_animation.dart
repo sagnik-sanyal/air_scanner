@@ -1,8 +1,9 @@
 import 'dart:math';
 
-import 'package:air_scanner/providers/notifiers/image_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+
+import '../providers/notifiers/image_notifier.dart';
 
 class ProcessingAnimation extends StatefulWidget {
   final ImageProcessingState state;
@@ -50,7 +51,7 @@ class _ProcessingAnimationState extends State<ProcessingAnimation>
             'assets/processing_animation.json',
             controller: _controller,
           ),
-          builder: (context, child) => child!,
+          builder: (BuildContext context, Widget? child) => child!,
         ),
         Text(widget.state.message),
       ],

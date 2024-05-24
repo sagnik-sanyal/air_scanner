@@ -9,16 +9,15 @@ import '../../utils/image_utils.dart';
 part 'image_state.dart';
 
 /// Notifier for the image state.
-final imageNotiiferProvider =
-    AutoDisposeNotifierProvider<ImageNotifier, ImageState>(
-  ImageNotifier.new,
-  name: 'imageNotiiferProvider',
-);
+final AutoDisposeNotifierProvider<ImageNotifier, ImageState>
+    imageNotiiferProvider =
+    AutoDisposeNotifierProvider<ImageNotifier, ImageState>(ImageNotifier.new,
+        name: 'imageNotiiferProvider');
 
 /// Provider for the image state.
 final class ImageNotifier extends AutoDisposeNotifier<ImageState> {
   late Dio _dio;
-  static const String apiKey = 'API_KEY';
+  static const String apiKey = 'API_KEY_HERE';
   static const String baseUrl = 'https://api.remove.bg/v1.0/removebg';
 
   @override
@@ -41,10 +40,10 @@ final class ImageNotifier extends AutoDisposeNotifier<ImageState> {
   Future<void> uploadImage(XFile image) async {
     final ImageState prevState = state;
     state = const ImageProcessingState(message: 'Validating image');
-    final Response post = await _dio.post(
+    final Response<List<int>> post = await _dio.post(
       baseUrl,
       options: Options(
-        headers: {'X-API-Key': apiKey},
+        headers: <String, String>{'X-API-Key': apiKey},
         responseType: ResponseType.bytes,
         contentType: 'multipart/form-data',
       ),
@@ -62,7 +61,8 @@ final class ImageNotifier extends AutoDisposeNotifier<ImageState> {
       // final String ext = extension(image.path);
       // final XFile? after = await ImageUtils.instance
       //     .createTempFile(post.data!, '$name-transparent', ext);
-      state = ImageSelectedState(before: image, after: post.data!);
+      final Uint8List uint8List = Uint8List.fromList(post.data!);
+      state = ImageSelectedState(before: image, after: uint8List);
     } else {
       state = prevState;
     }

@@ -13,12 +13,12 @@ sealed class ImageState extends Equatable {
   }) =>
       switch (this) {
         ImageInitialState() => initial(),
-        ImageSelectedState(:final before, :final after) =>
+        ImageSelectedState(:final XFile before, :final Uint8List? after) =>
           selected(before, after),
         ImageProcessingState(
-          :final uploadProgress,
-          :final downloadProgress,
-          :final message
+          :final double uploadProgress,
+          :final double downloadProgress,
+          :final String message
         ) =>
           processing(uploadProgress, downloadProgress, message),
       };
@@ -31,12 +31,12 @@ sealed class ImageState extends Equatable {
   }) =>
       switch (this) {
         ImageInitialState() => initial?.call() ?? orElse(),
-        ImageSelectedState(:final before, :final after) =>
+        ImageSelectedState(:final XFile before, :final Uint8List? after) =>
           selected?.call(before, after) ?? orElse(),
         ImageProcessingState(
-          :final uploadProgress,
-          :final downloadProgress,
-          :final message
+          :final double uploadProgress,
+          :final double downloadProgress,
+          :final String message
         ) =>
           processing?.call(uploadProgress, downloadProgress, message) ??
               orElse(),
@@ -47,7 +47,7 @@ final class ImageInitialState extends ImageState {
   const ImageInitialState();
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => <Object?>[];
 }
 
 final class ImageSelectedState extends ImageState {
@@ -83,5 +83,9 @@ final class ImageProcessingState extends ImageState {
   double get progress => (uploadProgress + downloadProgress) / 2;
 
   @override
-  List<Object?> get props => [uploadProgress, downloadProgress, message];
+  List<Object?> get props => <Object?>[
+        uploadProgress,
+        downloadProgress,
+        message,
+      ];
 }
